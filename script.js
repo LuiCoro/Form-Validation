@@ -15,10 +15,58 @@ function showError(input, message) {
 
 // Checks if email is valid
 function isEmail(email) {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // regular expression for checking email
     
-    return re.test(String(email).toLowerCase());
+    return re.test(String(email).toLowerCase()); // return true if email is valid
 }
+
+// Gets the field name
+function getFieldName(input) {
+    return input.id.charAt(0).toUpperCase() + input.id.slice(1); // capitalize the first letter of the input id and adds the rest of the letters afterwords
+}
+
+/* ( -> OPEN ME! BEFORE REFACTORING  <- ) This was the code that checked all the inputs to see if they had some form of value,
+    if the email is valid, and if the passwords match.
+    
+if(username.value === '') {
+  showError(username, 'Username is required');
+} else {
+  showSuccess(username);
+}
+
+if(email.value === '') {
+  showError(email, 'Email is required');
+} else if (!isEmail(email.value)) {
+  showError(email, 'Email is not valid');
+} else {
+  showSuccess(email);
+}
+
+if(password.value === '') {
+  showError(password, 'Password is required');
+} else {
+  showSuccess(password);
+}
+
+if(password2.value !== password.value) {
+  showError(password2, 'Password is required');
+} else {
+  showSuccess(password2);
+}
+
+ */
+
+// ( -> AFTER REFACTORING <-) Checks required fields
+function checkRequired(inputArr) {
+    inputArr.forEach(function(input) { // for each input
+        if (input.value.trim() === '') { // if the input is empty
+            showError(input, `${getFieldName(input)} is required`); // show the error message
+        } else {
+            showSuccess(input); // if the input is not empty, show the success message
+        }
+    });
+}
+
 
 // Show input success message
 function showSuccess(input) {
@@ -26,34 +74,10 @@ function showSuccess(input) {
     formControl.className = 'form-control success';  // add the success class to the parent
 }
 
-// Add event listener to the form that prevents default behaviour
+
 form.addEventListener('submit', function (e) {
-  e.preventDefault();
+  e.preventDefault(); // prevent the default behaviour of the form
   
-  if(username.value === '') {
-    showError(username, 'Username is required');
-  } else {
-    showSuccess(username);
-  }
-  
-  if(email.value === '') {
-    showError(email, 'Email is required');
-  } else if (!isEmail(email.value)) {
-    showError(email, 'Email is not valid');
-  } else {
-    showSuccess(email);
-  }
-  
-  if(password.value === '') {
-    showError(password, 'Password is required');
-  } else {
-    showSuccess(password);
-  }
-  
-  if(password2.value !== password.value) {
-    showError(password2, 'Password is required');
-  } else {
-    showSuccess(password2);
-  }
+  checkRequired([username, email, password, password2]); // check if the required fields are filled
   
 })
