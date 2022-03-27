@@ -14,10 +14,14 @@ function showError(input, message) {
 }
 
 // Checks if email is valid
-function isEmail(email) {
+function checkEmail(input) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // regular expression for checking email
     
-    return re.test(String(email).toLowerCase()); // return true if email is valid
+    if( re.test(input.value.trim()) ) { // if the email is valid
+        showSuccess(input); // show success
+    } else {
+        showError(input, 'Email is not valid'); // show error
+    }
 }
 
 // Gets the field name
@@ -67,6 +71,25 @@ function checkRequired(inputArr) {
     });
 }
 
+// Checks the length of the input
+function checkLength(input, min, max) { // input, min length, max length
+    if (input.value.length < min) { // if the input is shorter than the min length
+        showError(input, `${getFieldName(input)} must be at least ${min} characters`); // show the error message
+    } else if (input.value.length > max) { // if the input is longer than the max length
+        showError(input, `${getFieldName(input)} must be less than ${max} characters`); // show the error message
+    } else {
+        showSuccess(input); // if the input is between the min and max length, show the success message
+    }
+}
+
+// Checks to see if password matches password2
+function checkPasswordsMatch(input1, input2) {
+    if (input1.value !== input2.value) { // if the passwords do not match
+        showError(input2, 'Passwords do not match'); // show the error message
+    } else {
+        showSuccess(input2); // if the passwords match, show the success message
+    }
+}
 
 // Show input success message
 function showSuccess(input) {
@@ -79,5 +102,8 @@ form.addEventListener('submit', function (e) {
   e.preventDefault(); // prevent the default behaviour of the form
   
   checkRequired([username, email, password, password2]); // check if the required fields are filled
-  
+  checkLength(username, 3, 15); // check if the username is between 3 and 15 characters
+  checkLength(password, 6, 25); // check if the password is between 6 and 25 characters
+  checkEmail(email); // check if the email is valid
+  checkPasswordsMatch(password, password2); // check if the passwords match
 })
